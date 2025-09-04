@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import './App.css';
+import AppRoutes from '@/routes/AppRoutes';
 
 const App = () => {
   return (
@@ -14,8 +15,11 @@ const App = () => {
         <li>
           <Link to="/history">History 예제</Link>
         </li>
+        <li>
+          <Link to="/callback">useCallback</Link>
+        </li>
       </ul>
-      
+      <AppRoutes />
     </>
   );
 }
