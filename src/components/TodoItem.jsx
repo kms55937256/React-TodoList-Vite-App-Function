@@ -1,15 +1,29 @@
-import { memo } from 'react';
+import { memo, useCallback } from 'react';
+import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
+
+import { removeTodo, toggleTodo } from '@/reducers/todoSlice';
 import './TodoItem.css';
 
-const FunctionalTodoItem = ({ text, checked, id, onToggle, onRemove }) => {
+const TodoItem = ({ text, checked, id }) => {
+  const dispatch = useDispatch();
+
+  const handleRemove = useCallback((id) => {
+    dispatch(removeTodo(id))
+  },[dispatch]);
+
+  const handleToggle = useCallback((todo) => {
+      todo.checked = !todo.checked;
+      dispatch(toggleTodo(todo))
+  },[dispatch]);
+
   return (
-    <div className="todo-item" onClick={() => onToggle(id)}>
+    <div className="todo-item" onClick={() => handleToggle({ text, checked, id })}>
       <div 
         className="remove" 
         onClick={(e) => {
           e.stopPropagation(); // onToggle 이 실행되지 않도록 함
-          onRemove(id);
+          handleRemove(id);
         }}
       >
         &times;
@@ -22,17 +36,15 @@ const FunctionalTodoItem = ({ text, checked, id, onToggle, onRemove }) => {
   );
 };
 
-FunctionalTodoItem.propTypes = {
+TodoItem.propTypes = {
   text: PropTypes.string,
   checked: PropTypes.bool,
   id: PropTypes.number,
-  onToggle: PropTypes.func,
-  onRemove: PropTypes.func
 };
 
 // memo를 사용하여 shouldComponentUpdate 대체
 // checked가 변경될 때만 리렌더링
 export default memo(
-  FunctionalTodoItem,
+  TodoItem,
   (prevProps, nextProps) => prevProps.checked === nextProps.checked
 );
